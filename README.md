@@ -8,6 +8,8 @@ A collection of foundational Python scripts demonstrating core Large Language Mo
 - `2_structured_outputs.py`: Guide and implementation for enforcing structured schemas (JSON outputs) from models.
 - `3_tool_calls.py`: Examples of defining and handling tool/function calling workflows.
 
+  > **Disclaimer:** The weather tool in `3_tool_calls.py` returns mock/simulated data for demonstration purposes and does not make live calls to a real-world meteorological API.
+
 ## Prerequisites
 
 - Python 3.8+
