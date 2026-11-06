@@ -23,3 +23,44 @@ A collection of foundational Python scripts demonstrating core Large Language Mo
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows use: venv\Scripts\activate
+
+## Structured Outputs vs. Tool Calling
+
+While both **Structured Outputs** and **Tool Calling** (Function Calling) allow you to interact with Large Language Models in a deterministic, programmatic way, they serve distinct architectural purposes and operate differently under the hood.
+
+### 1. Structured Outputs
+* **Primary Goal:** Enforce that the model's response adheres strictly to a predefined schema (e.g., a Pydantic model or JSON Schema).
+* **How it Works:** Constrains the decoding/sampling process at the token level (using techniques like grammar-guided generation or guided decoding) so the model physically cannot output invalid JSON or deviate from the specified fields.
+* **Use Cases:** Data extraction, classification, sentiment analysis, generating form data, or parsing unformatted text into a strict data model.
+
+### 2. Tool Calling (Function Calling)
+* **Primary Goal:** Enable the model to choose and invoke external capabilities, APIs, or databases to fetch real-time information or perform actions.
+* **How it Works:** You provide the model with a set of tool definitions (name, description, parameters). The model analyzes the user prompt, decides *if* a tool is needed, and outputs a structured payload containing the tool name and arguments. Your application then executes the function and feeds the result back to the model.
+* **Use Cases:** Retrieving weather data, querying a SQL database, calculating math via code execution agents, or interacting with external services.
+
+---
+
+### Architecture & Execution Flow
+
+```text
++-------------------------------------------------------------------------+
+|                              USER PROMPT                                |
++-------------------------------------------------------------------------+
+                                     |
+                  +------------------+------------------+
+                  |                                     |
+                  v                                     v
+     [ Structured Outputs Flow ]             [ Tool Calling Flow ]
+                  |                                     |
+                  v                                     v
+      Model constrained by schema            Model decides to invoke tool
+    (Guaranteed schema compliance)          (Returns tool call + arguments)
+                  |                                     |
+                  v                                     v
+      [ Valid JSON Output Returned ]         [ Application Executes Tool ]
+                                                        |
+                                                        v
+                                             [ Tool Output Sent Back ]
+                                                        |
+                                                        v
+                                             [ Final Answer to User ]
